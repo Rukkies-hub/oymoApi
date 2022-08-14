@@ -78,7 +78,7 @@ router.post('/', async (req, res) => {
       .catch(error => console.log('Error sending mail...', error))
 
     res.status(201).json({
-      message: "That you for your feedback",
+      message: "Thaks you for your feedback 🥰🥰",
       success: true,
     })
   }
