@@ -34,7 +34,10 @@ app.use((req, res, next) => {
 
 if (process.env.NODE_ENV === "development") app.use(morgan("dev"))
 
-app.use('/', require('./routes/feedback'))
+app.use('/', [
+  require('./routes/feedback'),
+  require('./routes/getFeedback')
+])
 
 // Error handling
 app.use((error, req, res, next) => {
