@@ -1,22 +1,24 @@
 const express = require('express')
 const router = express.Router()
-const { payStackSecreteKey } = process.env
-const uuid = require('uuid-random')
 
-const paystack = require('paystack-api')(payStackSecreteKey)
+const { mongoose } = require("mongoose")
+const Feedback = require("../models/feedback")
 
-router.get('/', async (req, res) => {
+router.post('/', async (req, res) => {
+  const { email, feedback } = req.body
 
-  // paystack.{resource}.{method}
-  paystack.customer
-    .list()
-    .then(function (body) {
-      console.log(body)
-      res.json({ body })
+  if (email) {
+    Feedback.create({
+      _id: new mongoose.Types.ObjectId(),
+      email,
+      feedback
     })
-    .catch(function (error) {
-      console.log(error)
+
+    res.status(201).json({
+      message: "That you for your feedback",
+      success: true,
     })
+  }
 })
 
 module.exports = router
