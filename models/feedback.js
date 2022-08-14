@@ -9,6 +9,9 @@ const FeedbackSchema = new mongoose.Schema({
   feedback: {
     type: String,
   },
+  name: {
+    type: String,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
