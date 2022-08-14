@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!-- <meta name="viewport" content="width=<%= width %>"> -->
+  <meta name="viewport" content="width=700">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
+  <title>Document</title>
+</head>
+
+<body>
+  <form style="background-color:#fff; height: 1024px; width: 1024px">
+    <script src="https://api.ravepay.co/flwv3-pug/getpaidx/api/flwpbf-inline.js"></script>
+  </form>
+
+  <script>
+    const generateRef = (length) => {
+      var a = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".split("");
+      var b = [];
+      for (var i = 0; i < length; i++) {
+        var j = (Math.random() * (a.length - 1)).toFixed(0);
+        b[i] = a[j];
+      }
+      return b.join("");
+    }
+
+    const API_publicKey = "<%= publicKey %>"
+    window.onload = payWithRave
+    function payWithRave () {
+      var x = getpaidSetup({
+        PBFPubKey: API_publicKey,
+        customer_email: "<%= email %>",
+        amount: 5,
+        customer_phone: "<%= phone %>",
+        currency: "USD",
+        payment_options: "card, mobilemoneyghana, ussd",
+        txref: generateRef(11),
+        meta: [{
+          metaname: "${userProfile?.displayName}",
+          metavalue: "<%= phone %>"
+        }],
+        onclose: function () {
+          var resp = { event: 'cancelled' }
+          postMessage(JSON.stringify(resp))
+        },
+        callback: function (response) {
+          var txref = response.tx.txRef
+          if (
+            response.tx.chargeResponseCode == "00" ||
+            response.tx.chargeResponseCode == "0"
+          ) {
+            var resp = { event: 'successful', transactionRef: txref }
+            postMessage(JSON.stringify(resp))
+            // alert(JSON.stringify(resp.event))
+          } else {
+            var resp = { event: 'error' }
+            postMessage(JSON.stringify(resp))
+          }
+          // x.close()
+        }
+      })
+    }
+  </script>
+</body>
+
+</html>
